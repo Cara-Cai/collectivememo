@@ -18,10 +18,10 @@ socket.on('memo', function (file) {
         return
     }
 
-    let geo = new THREE.SphereGeometry(15, 32, 16); // (radius, widthSegments, heightSegments)
+    let geo = new THREE.IcosahedronGeometry(16,0); // 
 
     let mate = new THREE.MeshPhongMaterial({
-        color: "#b0ceff",
+        color: "#5c3f0e",
         shading: THREE.FlatShading
     });
 
@@ -109,7 +109,7 @@ function init() {
 
     camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
     const controls = new OrbitControls( camera, renderer.domElement );
-    controls.maxDistance=500;
+    controls.maxDistance=800;
     controls.minDistance=100;
     camera.position.z = 500;
 
