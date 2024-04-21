@@ -126,7 +126,7 @@ function init() {
     const bloomLayer = new THREE.Layers();
     bloomLayer.set(1);  // Set to use layer 1
     bloomPass.threshold = 0.1;
-    bloomPass.strength = 1;
+    bloomPass.strength = 0.5;
     bloomPass.radius = 1;
 
     composer = new EffectComposer(renderer);
@@ -175,6 +175,10 @@ function init() {
     //Button: AddMemo
     button.addEventListener('click', function () {
         let textValue = document.getElementsByName("message")[0].value;
+        x.style.display = "none";
+        y.style.display = "none";
+        z.style.display = "none";
+        k.style.display = "none";
         socket.emit('memo', { username: username.value, memocontent: textValue });
         
     })
@@ -198,7 +202,7 @@ function init() {
 
 
     // create particle  
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < 300; i++) {
         let mesh = new THREE.Mesh(geometry, material);
         mesh.position.set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize();
         mesh.position.multiplyScalar(90 + (Math.random() * 700));
@@ -219,7 +223,7 @@ function init() {
 
     // outer planets
     let outerPlanet = new THREE.Mesh(geomet2, mat);
-    outerPlanet.scale.x = outerPlanet.scale.y = outerPlanet.scale.z = 10;
+    outerPlanet.scale.x = outerPlanet.scale.y = outerPlanet.scale.z = 6;
     skelet.add(outerPlanet);
 
     // ambient light
@@ -265,9 +269,9 @@ function animate() {
 
       // Directly update scale of innerPlanet
 
-    core.scale.x =0.5+0.1*Math.sin(time * scaleFrequency) * scaleAmplitude; // Apply scaling directly
-    core.scale.y =0.5+0.1*Math.sin(time * scaleFrequency) * scaleAmplitude; // Apply scaling directly
-    core.scale.z =0.5+0.1*Math.sin(time * scaleFrequency) * scaleAmplitude; // Apply scaling directly
+    core.scale.x =0.5+0.03*Math.sin(time * scaleFrequency) * scaleAmplitude; // Apply scaling directly
+    core.scale.y =0.5+0.03*Math.sin(time * scaleFrequency) * scaleAmplitude; // Apply scaling directly
+    core.scale.z =0.5+0.03*Math.sin(time * scaleFrequency) * scaleAmplitude; // Apply scaling directly
   
     
 
@@ -287,46 +291,51 @@ function onPointerMove( event ) {
 }
 
 function hoverPieces() {
-
-
     raycaster.setFromCamera(pointer, camera);
-
-    // calculate objects intersecting the picking ray
     const intersects = raycaster.intersectObjects(circle.children, false);
+    const hidBtn = document.getElementById('hideMemoButton');
 
+    if (intersects.length > 0) {
+        const intersectedObject = intersects[0].object;
+        if (INTERSECTED !== intersectedObject) {
+            let thisMemo_id = intersectedObject.name;
+            let thisMemo = document.getElementById(thisMemo_id);
 
-    if ( intersects.length > 0 ) {
-        if ( INTERSECTED != intersects[ 0 ].object ) {
-            let thisMemo_id = intersects[0].object.name
-            let thisMemo = document.getElementById(thisMemo_id)
-
-            if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
-
-            INTERSECTED = intersects[0].object;
-            INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
-            INTERSECTED.material.color.setHex( 0xffff00 );
-           
-            let allMemos = Array.from(document.getElementsByClassName("memo"))
-
-            for (let memo of allMemos) {
+            // Hide all memos first
+            Array.from(document.getElementsByClassName("memo")).forEach(memo => {
                 memo.style.visibility = "hidden";
+            });
+
+            // Handle the previously intersected object
+            if (INTERSECTED) {
+                INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
             }
 
+            // Update the currently intersected object
+            INTERSECTED = intersectedObject;
+            INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
+            INTERSECTED.material.color.setHex(0xffff00);
+
+            // Display the current memo and the button
             thisMemo.style.visibility = "visible";
-          
+            hidBtn.style.visibility = "visible"; // Ensure the button is visible when needed
+            hidBtn.style.position = "fixed";
+            hidBtn.style.left = "13%";
+            hidBtn.style.top = "7%";
 
-            // setTimeout(() => {
-            //     thisMemo.style.visibility = "hidden" 
-
-            // }, 15000)
-
+            hidBtn.addEventListener("click",function(){      
+                thisMemo.style.visibility = "hidden"; 
+                this.style.visibility="hidden"
+            })
         }
 
     } else {
-        if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
-        INTERSECTED=null;
+        if (INTERSECTED) {
+            INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
+        }
+        INTERSECTED = null;
+        // hitBtn.style.visibility = "hidden"; // Hide the button when there are no intersections
     }
-
 
 }
 

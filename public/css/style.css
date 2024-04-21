@@ -173,7 +173,7 @@ html{
   }
   
 
-#username{
+/* #username{
   font-family:"Arimo", sans-serif;
     position: fixed;
     top:20%;
@@ -184,7 +184,6 @@ html{
     background: black;
     color:grey;
     padding: 2px;
-    /* display: inline-block; */
     border-radius: 3px;
     display:none;
   
@@ -208,7 +207,42 @@ html{
     width:18%;
     height:40%;
     text-align:justify;
+} */
+
+#username, #memocontent {
+  font-family: "Arimo", sans-serif; /* Clean, modern sans-serif font */
+  position: fixed;
+  left: 75%;
+  width: 20%; /* Slightly wider for better visual */
+  padding: 20px; /* More padding for a better text input experience */
+  font-size: 1.2em; /* Adjusted for readability */
+  border: 2px solid #bbb; /* Subtle border */
+  background: rgba(116, 116, 116, 0.605); /* Semi-transparent white for light theme */
+  color: #a8a8a8; /* Darker text for better contrast */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Soft drop shadow for depth */
+  display: none; /* Initially hidden, shown via JS */
+  /* transition: all 0.3s ease;  */
+  z-index: 1000; /* Ensures it's above other content */
 }
+
+#username {
+  top: 20%; /* Specific to username */
+}
+
+#memocontent {
+  top: 30%; /* Specific to content, giving some space between elements */
+  height: 30%; /* More height for multiline content */
+  overflow-y: auto; /* Allows scrolling inside the element */
+  text-align: left; /* Aligns text to the left */
+}
+
+/* Enhancing focus states */
+#username:focus, #memocontent:focus {
+  border-color: #3d3d3d; /* Darker border on focus */
+  box-shadow: 0 0 8px rgba(102, 175, 233, 0.6); /* Blue glow effect */
+}
+
 
 /* #memotext{
     color:white;
@@ -218,16 +252,23 @@ html{
 } */
 
 .memo {
-    font-family:Arial, Helvetica, sans-serif;
-    font-size:2em;
-    position: fixed;
-    left: 8%;
-    top:15%;
-    /* background: white; */
-    width: 400px;
-    height: 150px;
-    color:grey;
-    /* padding: 14px; */
+
+    font-family: Arial, Helvetica, sans-serif; /* Clear, universally supported font */
+    font-size: 1.5em; /* Standard size, adaptable to user settings */
+    line-height:1.6;
+    position: fixed; /* Fixed position to maintain place regardless of scrolling */
+    left: 10%; /* Positioned from the left edge of the viewport */
+    top: 10%; /* Positioned from the top of the viewport */
+    width: 400px; /* Fixed width, consider using % for responsiveness */
+    max-height:80%;
+    overflow-y: scroll;
+    overflow-wrap: break-word;
+    padding: 20px; /* Ample padding for text content */
+    background: rgba(72, 72, 72, 0.8); /* Semi-transparent grey background */
+    color: #a8a8a8; /* High contrast for readability */
+    border-radius: 8px; /* Rounded corners for a softer look */
+    box-shadow: 0 4px 8px rgba(243, 243, 243, 0.5); /* Subtle white shadow for depth */
+ 
 }
 
 
@@ -237,4 +278,14 @@ html{
 
 .visible {
     visibility: visible;
+}
+
+
+#hideMemoButton{
+  font-size:1em;
+  /* visibility:visible; */
+  position: fixed; 
+  top: 8%; 
+  left: 10%; 
+  transform: translate(-50%, -50%);
 }
