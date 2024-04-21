@@ -10,7 +10,7 @@ var app = express();
 app.use(express.static("public"));
 
 // If the user just goes to the "route" / then run this function
-app.get("js/", function (req, res) {
+app.get("/js/", function (req, res) {
   res.send("Hello World!");
 });
 
@@ -25,13 +25,18 @@ httpServer.listen(8000);
 // WebSockets work with the HTTP server
 var io = require("socket.io")(httpServer);
 
+// Track the number of connections
+let connectionCount = 0;
+
 // Register a callback function to run when we have an individual connection
 // This is run for each individual user that connects
 io.sockets.on(
   "connection",
   // We are given a websocket object in our function
   function (socket) {
+    connectionCount++; // Increment on new connection
     console.log(socket.id + " has joined the chat.");
+    io.emit('count update', { count: connectionCount });
     
     
     db.find({}).sort({ timestamp: 1 }).exec(function (err, docs) {
@@ -48,8 +53,7 @@ io.sockets.on(
       console.log(data)
 
        fs.writeFile('js/'+filename, data.memocontent, function(err){
-          // if (err) console.log(err);
-          // console.log("It's saved!")
+        
         
       var datatosave = {
         username: data.username,
@@ -68,7 +72,9 @@ io.sockets.on(
     });
 
     socket.on("disconnect", function () {
+      connectionCount--; // Decrement on disconnect
       console.log(socket.id + " has disconnected.");
+      io.emit('count update', { count: connectionCount });
     });
   }
 );

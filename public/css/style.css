@@ -288,3 +288,10 @@ html{
   left: 10%; 
   transform: translate(-50%, -50%);
 }
+
+#count{
+  color:white;
+  position:fixed;
+  top:10%;
+  font-size:2em;
+}

@@ -13,6 +13,13 @@ socket.on('connect', function () {
     console.log("Connected");
 });
 
+
+// Listen for count updates
+socket.on('count update', function(data) {
+    console.log('Count Update:', data.count); // Check if data is received
+    document.getElementById('count').textContent = 'Connected Clients: ' + data.count;
+});
+
 socket.on('memo', function (file) {
     if (circle === undefined) {
         return
