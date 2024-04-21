@@ -267,7 +267,6 @@ html{
     background: rgba(72, 72, 72, 0.8); /* Semi-transparent grey background */
     color: #a8a8a8; /* High contrast for readability */
     border-radius: 8px; /* Rounded corners for a softer look */
-    box-shadow: 0 4px 8px rgba(243, 243, 243, 0.5); /* Subtle white shadow for depth */
  
 }
 
@@ -283,7 +282,7 @@ html{
 
 #hideMemoButton{
   font-size:1em;
-  /* visibility:visible; */
+  visibility:hidden;
   position: fixed; 
   top: 8%; 
   left: 10%; 

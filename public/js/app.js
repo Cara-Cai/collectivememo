@@ -18,7 +18,7 @@ socket.on('memo', function (file) {
         return
     }
 
-    let geo = new THREE.IcosahedronGeometry(16,0); // 
+    let geo = new THREE.IcosahedronGeometry(14,0); // 
 
     let mate = new THREE.MeshPhongMaterial({
         color: "#5c3f0e",
@@ -253,7 +253,7 @@ function init() {
 
 
 function animate() {
-    const time = Date.now() * 0.001;  // Adjust time scale if necessary
+    const time = Date.now() * 0.002;  // Adjust time scale if necessary
     requestAnimationFrame(animate);
 
     particle.rotation.x += 0.0000;
