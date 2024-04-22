@@ -5,69 +5,10 @@ import { UnrealBloomPass } from "https://cdn.jsdelivr.net/npm/three@0.121.1/exam
 import { ShaderPass } from "https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/postprocessing/ShaderPass.js";
 import { TextureLoader } from "https://cdn.jsdelivr.net/npm/three@0.121.1/build/three.module.js";
 
-
+let userCount;
+let bloomPass, composer;
 
 var socket = io.connect();
-
-socket.on('connect', function () {
-    console.log("Connected");
-});
-
-
-// Listen for count updates
-socket.on('count update', function(data) {
-    console.log('Count Update:', data.count); // Check if data is received
-    document.getElementById('count').textContent = 'Connected Clients: ' + data.count;
-});
-
-socket.on('memo', function (file) {
-    if (circle === undefined) {
-        return
-    }
-
-    let geo = new THREE.IcosahedronGeometry(14,0); // 
-
-    let mate = new THREE.MeshPhongMaterial({
-        color: "#5c3f0e",
-        shading: THREE.FlatShading
-    });
-
-
-    // Memo
-    let memo = new THREE.Mesh(geo, mate);
-
-    // Create & Set Memo ID
-    let thisMemoId = `memo_${globalMemoIdCounter++}` // Use id and increase counter
-
-    // Other Memo Properties
-    // memo.position.set(100 + Math.floor(Math.random() * 150), Math.floor(Math.random() * 200), 150 + Math.floor(Math.random() * 30))
-    memo.position.set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize();
-    memo.position.multiplyScalar(100 + (Math.random() * 300));
-    circle.add(memo)
-    memo.name = thisMemoId;
-
-    // Create text 
-    const newDiv = document.createElement("div");
-
-    let textValue = file.memocontent;
-    let userName = file.username;
-    const newContent = document.createTextNode(textValue); 
-    const newName = document.createTextNode(userName);
-
-    //Fix - 换行
-    let linebreak = document.createElement("br");
-
-    newDiv.appendChild(newName);
-    newDiv.append(linebreak);
-    newDiv.appendChild(newContent);
-
-    newDiv.id = thisMemoId;
-    newDiv.className = `memo hidden`
-
-    // add the newly created element and its content into the DOM
-    const textDiv = document.getElementById("memos");
-    textDiv.appendChild(newDiv);
-});
 
 
 // global variable
@@ -82,8 +23,6 @@ let pointer;
 var globalMemoIdCounter = 0;
 let INTERSECTED;
 let core;
-
-let composer;
 
 
 let scaleAmplitude = 2;
@@ -129,7 +68,7 @@ function init() {
 
     // Bloom effect setup
     const renderScene = new RenderPass(scene, camera);
-    const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+    bloomPass = bloomPass || new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
     const bloomLayer = new THREE.Layers();
     bloomLayer.set(1);  // Set to use layer 1
     bloomPass.threshold = 0.1;
@@ -280,15 +219,38 @@ function animate() {
     core.scale.y =0.5+0.03*Math.sin(time * scaleFrequency) * scaleAmplitude; // Apply scaling directly
     core.scale.z =0.5+0.03*Math.sin(time * scaleFrequency) * scaleAmplitude; // Apply scaling directly
   
-    
-
-
     hoverPieces();
     renderer.render(scene, camera);
     composer.render();
 
 }
 
+
+
+////- TO BE FIXED
+function updateBloomSettings(userCount) {
+    if (!bloomPass) {
+        console.error('bloomPass is not initialized yet. Scheduling update...');
+        setTimeout(() => updateBloomSettings(userCount), 100); // Check again shortly
+        return;
+    }
+    // If initialized, proceed to update
+    bloomPass.strength = calculateBloomStrength(userCount);
+    console.log("Bloom strength updated to:", bloomPass.strength);
+}
+
+// Calculate new bloom strength based on user count
+function calculateBloomStrength(userCount) {
+    const maxUsers = 10;
+    const minStrength = 0.5;
+    const maxStrength = 1.5;
+
+    // Normalize user count to a scale factor between 0 and 1
+    const scaleFactor = Math.min(userCount / maxUsers, 1);
+
+    // Linearly interpolate between minStrength and maxStrength based on scaleFactor
+    return minStrength + (maxStrength - minStrength) * scaleFactor;
+}
 
 function onPointerMove( event ) {
 
@@ -353,8 +315,70 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
+
 // window.addEventListener( 'pointermove', hoverPieces);
 window.onload = init;
 
+//socket receiving
+socket.on('connect', function () {
+    console.log("Connected");
+});
 
+
+// Listen for count updates
+socket.on('count update', function(data) {
+    console.log('Count Update:', data.count); // Check if data is received
+    document.getElementById('count').textContent = 'Connected Clients: ' + data.count;
+    userCount=data.count;
+
+    updateBloomSettings(data.count);
+});
+
+socket.on('memo', function (file) {
+    if (circle === undefined) {
+        return
+    }
+
+    let geo = new THREE.IcosahedronGeometry(14,0); // 
+    let mate = new THREE.MeshPhongMaterial({
+        color: "#5c3f0e",
+        shading: THREE.FlatShading
+    });
+
+
+    // Memo
+    let memo = new THREE.Mesh(geo, mate);
+
+    // Create & Set Memo ID
+    let thisMemoId = `memo_${globalMemoIdCounter++}` // Use id and increase counter
+
+    // Other Memo Properties
+    // memo.position.set(100 + Math.floor(Math.random() * 150), Math.floor(Math.random() * 200), 150 + Math.floor(Math.random() * 30))
+    memo.position.set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize();
+    memo.position.multiplyScalar(100 + (Math.random() * 300));
+    circle.add(memo)
+    memo.name = thisMemoId;
+
+    // Create text 
+    const newDiv = document.createElement("div");
+
+    let textValue = file.memocontent;
+    let userName = file.username;
+    const newContent = document.createTextNode(textValue); 
+    const newName = document.createTextNode(userName);
+
+    //Fix - 换行
+    let linebreak = document.createElement("br");
+
+    newDiv.appendChild(newName);
+    newDiv.append(linebreak);
+    newDiv.appendChild(newContent);
+
+    newDiv.id = thisMemoId;
+    newDiv.className = `memo hidden`
+
+    // add the newly created element and its content into the DOM
+    const textDiv = document.getElementById("memos");
+    textDiv.appendChild(newDiv);
+});
 
