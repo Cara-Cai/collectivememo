@@ -107,9 +107,10 @@ function init() {
     });
 
     let mat = new THREE.MeshPhongMaterial({
-        color: 0x4a4507,
+        color: 0x5e3e01,
         side: THREE.DobuleSide,
-        wireframe: true
+        wireframe: true,
+        opacity:0
     });
 
 
@@ -225,9 +226,6 @@ function animate() {
 
 }
 
-
-
-////- TO BE FIXED
 function updateBloomSettings(userCount) {
     if (!bloomPass) {
         console.error('bloomPass is not initialized yet. Scheduling update...');
