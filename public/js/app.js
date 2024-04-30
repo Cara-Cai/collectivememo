@@ -82,7 +82,13 @@ function init() {
 
 
     // 3d object
-    circle = new THREE.Object3D();
+    // circle = new THREE.Object3D();
+    if (circle === undefined) {
+        console.log("circle is not defined!!")
+        circle = new THREE.Object3D();
+
+        // return
+    }
     skelet = new THREE.Object3D();
     particle = new THREE.Object3D();
     core = new THREE.Object3D();
@@ -317,6 +323,7 @@ function onWindowResize() {
 // window.addEventListener( 'pointermove', hoverPieces);
 window.onload = init;
 
+
 //socket receiving
 socket.on('connect', function () {
     console.log("Connected");
@@ -333,9 +340,14 @@ socket.on('count update', function(data) {
 });
 
 socket.on('memo', function (file) {
+    
     if (circle === undefined) {
-        return
+        console.log("circle is not defined!!")
+        circle = new THREE.Object3D();
+
+        // return
     }
+    console.log("test:", file)
 
     let geo = new THREE.IcosahedronGeometry(14,0); // 
     let mate = new THREE.MeshPhongMaterial({
