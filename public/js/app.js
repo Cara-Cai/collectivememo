@@ -226,9 +226,10 @@ function animate() {
     core.scale.y =0.5+0.03*Math.sin(time * scaleFrequency) * scaleAmplitude; // Apply scaling directly
     core.scale.z =0.5+0.03*Math.sin(time * scaleFrequency) * scaleAmplitude; // Apply scaling directly
   
-    hoverPieces();
+    // hoverPieces();
     renderer.render(scene, camera);
     composer.render();
+    hoverPieces();
 
 }
 
@@ -307,7 +308,8 @@ function hoverPieces() {
             INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
         }
         INTERSECTED = null;
-        // hitBtn.style.visibility = "hidden"; // Hide the button when there are no intersections
+        // hidBtn.style.visibility = "hidden"; // Hide the button when there are no intersections
+        // thisMemo.style.visibility = "hidden"
     }
 
 }
