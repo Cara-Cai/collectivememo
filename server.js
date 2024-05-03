@@ -41,13 +41,23 @@ io.sockets.on(
     
     db.find({}).sort({ timestamp: 1 }).exec(function (err, docs) {
       // Loop through the results, send each one as if it were a video file
-	    for (var i = 0; i < docs.length; i++) {
-        console.log(docs[i])
-        io.emit('memo',docs[i]);
-	    }
+	    // for (var i = 0; i < docs.length; i++) {
+      //   // console.log(docs[i])
+      //   io.emit('memo',docs[i]);
+	    // }
+
+      if (err) {
+        console.error("Database error:", err);
+        return;
+    }
+      // Send only to the newly connected socket, not all sockets
+      docs.forEach(doc => {
+        socket.emit('memo', doc);
+      });
     });
 
-    
+    // socket.on("memoOld")
+
     socket.on("memo", function(data) {
       //io.emit("mouse", data);
       var filename = Date.now();
