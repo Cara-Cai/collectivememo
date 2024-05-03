@@ -292,9 +292,9 @@ function hoverPieces() {
             // Display the current memo and the button
             thisMemo.style.visibility = "visible";
             hidBtn.style.visibility = "visible"; // Ensure the button is visible when needed
-            hidBtn.style.position = "fixed";
-            hidBtn.style.left = "13%";
-            hidBtn.style.top = "7%";
+            // hidBtn.style.position = "fixed";
+            // hidBtn.style.left = "13%";
+            // hidBtn.style.top = "7%";
 
             hidBtn.addEventListener("click",function(){      
                 thisMemo.style.visibility = "hidden"; 

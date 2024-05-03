@@ -227,7 +227,7 @@ html{
     position: fixed; /* Fixed position to maintain place regardless of scrolling */
     left: 10%; /* Positioned from the left edge of the viewport */
     top: 15%; /* Positioned from the top of the viewport */
-    width: 400px; /* Fixed width, consider using % for responsiveness */
+    width: 20%; /* Fixed width, consider using % for responsiveness */
     max-height:80%;
     overflow-y: scroll;
     overflow-wrap: break-word;
@@ -256,8 +256,8 @@ html{
   font-size:1em;
   visibility:hidden;
   position: fixed; 
-  top: 10%; 
-  left: 20%; 
+  top: 18%; 
+  left: 35%; 
   transform: translate(-50%, -50%);
 }
 
